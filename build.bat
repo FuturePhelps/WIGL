@@ -1,0 +1,1 @@
+cl /Fe.\bin\run.exe /Fo.\obj\ src/application.cpp src/window.cpp /link user32.lib
