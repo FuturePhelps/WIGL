@@ -1,7 +1,6 @@
-This file only exists so the /bin directory exists in the repository.
+This is where the executable for the project goes after compilation.
 
-Disregard this file, it has no purpose whatsoever.
-
-Thanks.
+As is, it does not use DLLs, but if you add your own dependencies
+you should make sure the DLLs are in this directory as well.
 
 - Felix
