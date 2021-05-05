@@ -6,7 +6,7 @@ int CreateApplicationWindow(WNDPROC WndProc, HINSTANCE hAppInstance, LPSTR Class
     WNDCLASS wc;
 
     // Fill in the window class fields
-    wc.style = CS_HREDRAW | CS_VREDRAW;                 // Window style (bit flags)
+    wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;      // Window style (bit flags)
     wc.lpfnWndProc = WndProc;                           // Pointer to window procedure function
     wc.cbClsExtra = 0;                                  // Number of extra bytes to allocate for this window class
     wc.cbWndExtra = 0;                                  // Number of extra bytes to allocate for each instance of this window class
