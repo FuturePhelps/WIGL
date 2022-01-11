@@ -32,8 +32,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     switch(msg)
     {
         case WM_DESTROY:
-            PostQuitMessage(0);
-            return 0;
+            HGLRC currentContext = wglGetCurrentContext();  // Get the current OpenGL context
+            wglMakeCurrent(GetDC(hWnd), NULL);              // Unset the OpenGL context
+            wglDeleteContext(currentContext);               // Deleting the current OpenGL context
+            PostQuitMessage(0);                             // Make sure the thread terminates
+            return 0;                                       // Return with no errors
     }
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
