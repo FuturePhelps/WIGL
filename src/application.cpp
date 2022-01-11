@@ -19,10 +19,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
         return 1;
     }
 
-    while(GetMessage(&msg, NULL, 0, 0))
+    bool running = true;
+
+    while(running)
     {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+            if (msg.message == WM_QUIT)
+            {
+                running = false;
+                break;
+            }
+
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+
+        else
+        {
+            // TODO: Add some code here for rendering
+        }
     }
 
     return msg.wParam;
