@@ -1,6 +1,8 @@
 // Includes
 #include "window.h"
 #include <gl/GL.h>
+#include <chrono>
+#include <iostream>
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -20,10 +22,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
     }
 
     bool running = true;
+    std::chrono::steady_clock::time_point lastRender = std::chrono::high_resolution_clock::now();
+    std::chrono::steady_clock::time_point currentTime;
+    long long dt;
+    double maxFPS = 60.0;
+    long long microsecondsPerFrame = (long long)(1.0e6 / maxFPS);
 
     while(running)
     {
-
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
             if (msg.message == WM_QUIT)
@@ -35,10 +41,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+        
+        currentTime = std::chrono::high_resolution_clock::now();
 
-        else
+        dt = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastRender).count();
+
+        if (dt >= microsecondsPerFrame)
         {
             // TODO: Add some code here for rendering
+            lastRender = currentTime;
+
         }
     }
 
