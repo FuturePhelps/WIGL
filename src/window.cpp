@@ -48,17 +48,17 @@ int CreateApplicationWindow(WNDPROC WndProc, HINSTANCE hAppInstance, LPSTR Class
     }
     
     // Create the window and store the handle into hWnd
-    hWnd = CreateWindow(ClassName,                      // Window class for this instance
-                        "Application",                  // Text that displays at the top of the window
-                        WS_OVERLAPPEDWINDOW,            // Window style (bit flags)
-                        CW_USEDEFAULT,                  // x position
-                        CW_USEDEFAULT,                  // y position
-                        CW_USEDEFAULT,                  // Width in pixels
-                        CW_USEDEFAULT,                  // Height in pixels
-                        NULL,                           // Window handle for the parent window
-                        NULL,                           // Handle to the menu window
-                        hAppInstance,                   // Handle to the application instance
-                        NULL                            // Pointer to a value to be passed down to the window
+    hWnd = CreateWindow(ClassName,                                                  // Window class for this instance
+                        "Application",                                              // Text that displays at the top of the window
+                        WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,    // Window style (bit flags)
+                        CW_USEDEFAULT,                                              // x position
+                        CW_USEDEFAULT,                                              // y position
+                        CW_USEDEFAULT,                                              // Width in pixels
+                        CW_USEDEFAULT,                                              // Height in pixels
+                        NULL,                                                       // Window handle for the parent window
+                        NULL,                                                       // Handle to the menu window
+                        hAppInstance,                                               // Handle to the application instance
+                        NULL                                                        // Pointer to a value to be passed down to the window
                         );
 
 
