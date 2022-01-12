@@ -1,8 +1,10 @@
 // Includes
 #include "window.h"
 #include <gl/GL.h>
+#include "glcorearb.h"
+#include "glext.h"
+#include "wglext.h"
 #include <chrono>
-#include <iostream>
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -21,52 +23,80 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
         return 1;
     }
 
+    HDC hdc = GetDC(hWnd);
+
+    // Keep track of when the program is running for the loop
     bool running = true;
+
+    // Some declarations for framerate limiter
     std::chrono::steady_clock::time_point lastRender = std::chrono::high_resolution_clock::now();
     std::chrono::steady_clock::time_point currentTime;
     long long dt;
-    double maxFPS = 60.0;
-    long long microsecondsPerFrame = (long long)(1.0e6 / maxFPS);
+    const double maxFPS = 60.0;
+    const long long microsecondsPerFrame = (long long)(1.0e6 / maxFPS);
+    
 
+    // Message and rendering loop
     while(running)
     {
+        // Check if there are messages to process and send them to WndProc if so
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
+            // Stop the loop on WM_QUIT message
             if (msg.message == WM_QUIT)
             {
                 running = false;
                 break;
             }
 
+            // Send messages to WndProc
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-        
+
+        // Get the current time and calculate the time since the last render
         currentTime = std::chrono::high_resolution_clock::now();
-
         dt = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastRender).count();
-
+        
         if (dt >= microsecondsPerFrame)
         {
-            // TODO: Add some code here for rendering
-            lastRender = currentTime;
+            // Render here
+            glClearColor(0.0, 0.0, 0.0, 0.0)
+            glClear(GL_COLOR_BUFFER_BIT);
+            glBegin(GL_TRIANGLES);
+            glColor3f(1.0, 1.0, 1.0);
+            glVertex3f(0, 0, 0);
+            glVertex3f(1, 0, 0);
+            glVertex3f(0, 1, 0);
+            glEnd();
+            SwapBuffers(hdc);
 
+            // Update the time
+            lastRender = currentTime;
         }
     }
 
+    // Return the wParam of the last message (Should be 0 if everything went well)
     return msg.wParam;
 }
 
+// Window Procedure function to handle messages to the window
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    // Define some variables
+    HDC hdc;
+    int pixelFormat;
+    HGLRC context;
+
     switch(msg)
     {
         // On window deletion, delete OpenGL context and exit application
         case WM_DESTROY:
         {
-            wglDeleteContext(wglGetCurrentContext());       // Deleting the current OpenGL context
-            PostQuitMessage(0);                             // Make sure the thread terminates
-            return 0;                                       // Return with no errors
+            ReleaseDC(hWnd, hdc);           // Release the device context
+            wglDeleteContext(context);      // Deleting the current OpenGL context
+            PostQuitMessage(0);             // Make sure the thread terminates
+            return 0;                       // Return with no errors
         }
 
         // On window creation, initialize OpenGL context
@@ -94,10 +124,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             };
 
             // Get the device context from the window handle
-            HDC hdc = GetDC(hWnd);
+            hdc = GetDC(hWnd);
             
             // Find the best pixel format given the parameters of pfd
-            int pixelFormat = ChoosePixelFormat(hdc, &pfd);
+            pixelFormat = ChoosePixelFormat(hdc, &pfd);
 
             // Set the pixel format to the window's device context
             if(!SetPixelFormat(hdc, pixelFormat, &pfd))
@@ -108,7 +138,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             }
 
             // Get the OpenGL context
-            HGLRC context = wglCreateContext(hdc);
+            context = wglCreateContext(hdc);
 
             // Make the context current
             wglMakeCurrent(hdc, context);
