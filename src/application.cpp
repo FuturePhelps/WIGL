@@ -30,7 +30,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
     const UINT msPerFrame = (UINT)(1.0e3 / maxFPS);
 
     // Set a timer for the window at the specified framerate
-    SetTimer(hWnd, NULL, msPerFrame, NULL);
+    UINT_PTR timer = SetTimer(hWnd, NULL, msPerFrame, NULL);
 
     // Message and rendering loop
     while(running)
@@ -41,11 +41,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
             // Stop the loop on WM_QUIT message
             if (msg.message == WM_QUIT)
             {
+                KillTimer(hWnd, timer);
                 running = false;
                 break;
             }
 
             // Rendering happens on the WM_TIMER message
+            // TODO: Find a better way to to framerate limiting
 
             // Send messages to WndProc
             TranslateMessage(&msg);
