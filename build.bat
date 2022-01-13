@@ -1,1 +1,1 @@
-cl /EHsc /Fe.\bin\run.exe /Fo.\obj\ src/application.cpp src/window.cpp /link user32.lib Gdi32.lib opengl32.lib
+cl /EHsc /Fe.\bin\run.exe /Fo.\obj\ src/application.cpp src/window.cpp src/wndmessages.cpp src/render.cpp /link user32.lib Gdi32.lib opengl32.lib

@@ -1,8 +1,8 @@
 #ifndef WNDMESSAGES
 #define WNDMESSAGES
 
-#include <gl/GL.h>
-#include "params.h"
-#include "window.h"
+#include <windows.h>
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 #endif
