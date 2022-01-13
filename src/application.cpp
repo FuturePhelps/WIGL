@@ -14,8 +14,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
     MSG msg;
     HWND hWnd;
 
+    // Set our app instance to the instance given by Windows
     hAppInstance = hInstance;
 
+    // Create our application window
     if(!CreateApplicationWindow(WndProc, hAppInstance, ClassName, CmdShow, hWnd))
     {
         return 1;
@@ -43,9 +45,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
                 running = false;
                 break;
             }
-
-            // Rendering happens on the WM_TIMER message
-            // We also render on WM_PAINT to stop flickering when resizing
 
             // Send messages to WndProc
             TranslateMessage(&msg);
