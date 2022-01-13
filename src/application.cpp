@@ -5,6 +5,10 @@
 #include "glext.h"
 #include "wglext.h"
 
+// Parameters for the app
+static const double maxFPS = 60.0;
+static const double aspectRatio = 16.0/9.0;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LPSTR ClassName = "Application";
@@ -15,7 +19,7 @@ void render(HWND hWnd)
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_TRIANGLES);
-    glColor3f(1.0, 1.0, 1.0);
+    glColor3f(0.0, 0.0, 0.0);
     glVertex3f(0, 0.5, 0);
     glVertex3f(-0.5, -0.5, 0);
     glVertex3f(0.5, -0.5, 0);
@@ -25,6 +29,7 @@ void render(HWND hWnd)
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int CmdShow)
 {
+    // Set up the windowing variables
     MSG msg;
     HWND hWnd;
 
@@ -35,14 +40,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
         return 1;
     }
 
-    // Set the clear color to black
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    // Set the clear color to white
+    glClearColor(1.0, 1.0, 1.0, 1.0);
 
     // Keep track of when the program is running for the loop
     bool running = true;
 
-    // Some declarations for framerate limiter
-    const double maxFPS = 60.0;
+    // For the timer
     const UINT msPerFrame = (UINT)(1.0e3 / maxFPS);
 
     // Set a timer for the window at the specified framerate
@@ -63,7 +67,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
             }
 
             // Rendering happens on the WM_TIMER message
-            // TODO: Find a better way to to framerate limiting
+            // We also render on WM_PAINT to stop flickering when resizing
 
             // Send messages to WndProc
             TranslateMessage(&msg);
@@ -92,6 +96,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case WM_PAINT:
         {
             render(hWnd);
+            break;
+        }
+
+        // Handle resizing
+        case WM_SIZE:
+        {
+            // Get the new width and height
+            UINT width = LOWORD(lParam);
+            UINT height = HIWORD(lParam);
+
+            // Set up some variables
+            UINT temp;
+            GLint x = 0;
+            GLint y = 0;
+
+            // Keep the aspect ratio constant
+            if ((double)width / height >= aspectRatio)
+            {
+                temp = (UINT)((double)height * aspectRatio);
+                x = (width - temp) / 2;
+                width = temp;
+            }
+            else
+            {
+                temp = (UINT)((double)width / aspectRatio);
+                y = (height - temp) / 2;
+                height = temp;
+            }
+
+            // Change the viewport
+            glViewport(x, y, width, height);
             break;
         }
 
