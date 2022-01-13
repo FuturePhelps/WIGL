@@ -1,13 +1,7 @@
 // Includes
 #include "window.h"
 #include <gl/GL.h>
-#include "glcorearb.h"
-#include "glext.h"
-#include "wglext.h"
-
-// Parameters for the app
-static const double maxFPS = 60.0;
-static const double aspectRatio = 16.0/9.0;
+#include "params.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
