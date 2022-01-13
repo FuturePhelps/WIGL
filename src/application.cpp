@@ -10,6 +10,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LPSTR ClassName = "Application";
 HINSTANCE hAppInstance;
 
+// Simple render function
+void render(HWND hWnd)
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBegin(GL_TRIANGLES);
+    glColor3f(1.0, 1.0, 1.0);
+    glVertex3f(0, 0.5, 0);
+    glVertex3f(-0.5, -0.5, 0);
+    glVertex3f(0.5, -0.5, 0);
+    glEnd();
+    SwapBuffers(GetDC(hWnd));
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int CmdShow)
 {
     MSG msg;
@@ -21,6 +34,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
     {
         return 1;
     }
+
+    // Set the clear color to black
+    glClearColor(0.0, 0.0, 0.0, 0.0);
 
     // Keep track of when the program is running for the loop
     bool running = true;
@@ -68,17 +84,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case WM_TIMER:
         {
             // This is just a test render
-            glClearColor(0.0, 0.0, 0.0, 0.0);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glBegin(GL_TRIANGLES);
-            glColor3f(1.0, 1.0, 1.0);
-            glVertex3f(0, 0.5, 0);
-            glVertex3f(-0.5, -0.5, 0);
-            glVertex3f(0.5, -0.5, 0);
-            glEnd();
-            SwapBuffers(GetDC(hWnd));
+            render(hWnd);
             break;
         }
+
+        // Render on WM_PAINT
+        case WM_PAINT:
+        {
+            render(hWnd);
+            break;
+        }
+
         // On window deletion, delete OpenGL context and exit application
         case WM_DESTROY:
         {
