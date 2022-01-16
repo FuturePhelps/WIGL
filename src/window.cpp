@@ -1,4 +1,5 @@
 #include "window.h"
+#include "params.h"
 
 int CreateApplicationWindow(WNDPROC WndProc, HINSTANCE hAppInstance, LPSTR ClassName, int CmdShow, HWND& hWnd)
 {
@@ -40,7 +41,8 @@ int CreateApplicationWindow(WNDPROC WndProc, HINSTANCE hAppInstance, LPSTR Class
                         );
     
     // Show and update the window before returning
-    ShowWindow(hWnd, CmdShow);
+    int showState = startMaximized ? SW_MAXIMIZE : CmdShow;
+    ShowWindow(hWnd, showState);
     UpdateWindow(hWnd);
 
     // Return TRUE if this function ran successfully
